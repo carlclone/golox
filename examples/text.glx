@@ -1,0 +1,14 @@
+var a=2;
+fun c() {
+    print a;
+}
+
+fun count(n) {
+    var a=5;
+    //print a;
+    c();
+}
+
+
+
+count(1);
