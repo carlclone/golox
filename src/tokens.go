@@ -6,6 +6,28 @@ type token uint
 
 //go:generate stringer -type token -linecomment tokens.go
 
+// preserved keyword token
+var keywords = map[string]token{
+	"and":      And,
+	"break":    Break,
+	"class":    Class,
+	"continue": Continue,
+	"else":     Else,
+	"false":    False,
+	"for":      For,
+	"fun":      Fun,
+	"if":       If,
+	"nil":      Nil,
+	"or":       Or,
+	"print":    Print,
+	"return":   Return,
+	"super":    Super,
+	"this":     This,
+	"true":     True,
+	"var":      Var,
+	"while":    While,
+}
+
 const (
 	_ token = iota
 	LeftParen

@@ -2,27 +2,7 @@ package main
 
 import "fmt"
 
-var keywords = map[string]token{
-	"and":      And,
-	"break":    Break,
-	"class":    Class,
-	"continue": Continue,
-	"else":     Else,
-	"false":    False,
-	"for":      For,
-	"fun":      Fun,
-	"if":       If,
-	"nil":      Nil,
-	"or":       Or,
-	"print":    Print,
-	"return":   Return,
-	"super":    Super,
-	"this":     This,
-	"true":     True,
-	"var":      Var,
-	"while":    While,
-}
-
+// ScanError define new error type for scan error
 type ScanError string
 
 func (e ScanError) Error() string {
@@ -30,12 +10,12 @@ func (e ScanError) Error() string {
 }
 
 type Scanner struct {
-	source  string
-	tokens  []*tokenObj
-	start   int
+	source  string      //input source code string
+	tokens  []*tokenObj //parsed tokens
+	start   int         //token lexeme start
 	current int
 	line    int
-	err     error
+	err     error // if there is an error , stop scan
 }
 
 func NewScanner(source string) *Scanner {
@@ -47,16 +27,20 @@ func NewScanner(source string) *Scanner {
 }
 
 func (s *Scanner) scan() ([]*tokenObj, error) {
+	//keep scan like a sliding window
 	for !s.atEnd() && s.err == nil {
 		s.start = s.current
 		s.scanToken()
 	}
+
+	//put an EOF to indicate token end
 	if s.err == nil {
 		s.tokens = append(s.tokens, &tokenObj{tok: EOF, line: s.line})
 	}
 	return s.tokens, s.err
 }
 
+//scan single token
 func (s *Scanner) scanToken() {
 	ch := s.advance()
 	switch ch {
@@ -107,12 +91,11 @@ func (s *Scanner) scanToken() {
 			s.token(Greater)
 		}
 	case '/':
-		//  match "//"
+		//  match "//............."
 		if s.match('/') {
 			for s.peek() != '\n' && !s.atEnd() {
 				s.advance()
 			}
-			//match "/* */"
 		} else if s.match('*') {
 			s.fullComment()
 		} else {
@@ -120,7 +103,8 @@ func (s *Scanner) scanToken() {
 			s.token(Slash)
 		}
 	case ' ', '\r', '\t':
-
+		//ignore
+		break
 	case '\n':
 		s.line++
 	case '"':
@@ -136,16 +120,13 @@ func (s *Scanner) scanToken() {
 	}
 }
 
-func isAlphaNum(ch byte) bool {
-	return isAlpha(ch) || isDigit(ch)
-}
-
 func (s *Scanner) identifier() {
 	for isAlphaNum(s.peek()) {
 		s.advance()
 	}
 	text := s.source[s.start:s.current]
 	var t token
+	//case , keyword
 	if tok, ok := keywords[text]; ok {
 		t = tok
 	} else {
@@ -162,15 +143,7 @@ func (s *Scanner) number() {
 	s.literal(Number, lit)
 }
 
-func isAlpha(ch byte) bool {
-	return (ch >= 'a' && ch <= 'z') ||
-		(ch >= 'A' && ch <= 'Z') ||
-		ch == '_'
-}
-
-func isDigit(ch byte) bool {
-	return ch >= '0' && ch <= '9'
-}
+//match "* */" , important cases , atEnd , \n , not terminated
 func (s *Scanner) fullComment() {
 	for !(s.peek() == '*' && s.peekNext() == '/') && !s.atEnd() {
 		if s.peek() == '\n' {
@@ -186,6 +159,39 @@ func (s *Scanner) fullComment() {
 	s.advance()
 }
 
+func (s *Scanner) token(t token) {
+	s.literal(t, nil)
+}
+
+func (s *Scanner) literal(t token, literal interface{}) {
+	lex := s.source[s.start:s.current]
+	s.tokens = append(s.tokens, &tokenObj{
+		tok:     t,
+		lexeme:  lex,
+		line:    s.line,
+		literal: literal,
+	})
+}
+
+//parse string
+func (s *Scanner) stringLit() {
+	for s.peek() != '"' && !s.atEnd() {
+		if s.peek() == '\n' {
+			s.line++
+		}
+		s.advance()
+	}
+	if s.atEnd() {
+		s.report("unterminated string")
+		return
+	}
+	s.advance()
+	//add string token , literal without two "
+	lit := s.source[s.start+1 : s.current-1]
+	s.literal(String, lit)
+}
+
+//scanner helpers
 func (s *Scanner) peekNext() byte {
 	if s.current+1 >= len(s.source) {
 		return byte(0)
@@ -193,6 +199,7 @@ func (s *Scanner) peekNext() byte {
 	return s.source[s.current+1]
 }
 
+// look ahead , if match then consume
 func (s *Scanner) match(ch byte) bool {
 	//if !s.atEnd() && s.source[s.current] == ch {
 	//	s.current++
@@ -212,53 +219,17 @@ func (s *Scanner) peek() byte {
 	}
 	return s.source[s.current]
 }
-
-func (s *Scanner) token(t token) {
-	s.literal(t, nil)
-}
-
-func (s *Scanner) literal(t token, literal interface{}) {
-	lex := s.source[s.start:s.current]
-	s.tokens = append(s.tokens, &tokenObj{
-		tok:     t,
-		lexeme:  lex,
-		line:    s.line,
-		literal: literal,
-	})
-}
-
 func (s *Scanner) atEnd() bool {
 	return s.current >= len(s.source)
 }
 
+//retrieve an token an advance
 func (s *Scanner) advance() byte {
 	i := s.current
 	s.current++
 	return s.source[i]
 }
 
-//TODO;避免错误传递影响后面的 token 解析
 func (s *Scanner) report(msg string) {
 	s.err = ScanError(errorAt(s.line, "", msg))
-}
-
-func (s *Scanner) stringLit() {
-	for s.peek() != '"' && !s.atEnd() {
-		if s.peek() == '\n' {
-			s.line++
-		}
-		s.advance()
-	}
-	if s.atEnd() {
-		s.report("unterminated string")
-		return
-	}
-	s.advance()
-	//add string token
-	lit := s.source[s.start+1 : s.current-1]
-	s.literal(String, lit)
-}
-
-func errorAt(line int, where string, msg string) string {
-	return fmt.Sprintf("[line %v] error%v: %v", line, where, msg)
 }
