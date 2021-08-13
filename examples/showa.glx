@@ -1,3 +1,8 @@
+//TODO; closure env bug ,
+//expected output :
+//global
+//global
+
 var a = "global";
 {
   fun showA() {

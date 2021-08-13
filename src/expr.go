@@ -5,7 +5,7 @@ type (
 
 	Expr interface { // interface declaration for type check
 		aExpr()
-		//eval(*Env) value
+		eval(*Env) value
 	}
 
 	expr struct{} // think as a parent class

@@ -30,22 +30,22 @@ func errorAtToken(t *tokenObj, msg string) string {
 	return e
 }
 
-// func printAST(e Expr) string {
-// 	switch o := e.(type) {
-// 	case *BinaryExpr:
-// 		return fmt.Sprintf("(%v %v %v)",
-// 			o.operator.tok, printAST(o.left), printAST(o.right))
-// 	case *TernaryExpr:
-// 		return fmt.Sprintf("(%v %v %v %v)",
-// 			o.operator.tok, printAST(o.op1), printAST(o.op2), printAST(o.op3))
-// 	case *UnaryExpr:
-// 		return fmt.Sprintf("(%v %v)",
-// 			o.operator.tok, printAST(o.right))
-// 	case *GroupingExpr:
-// 		return fmt.Sprintf("(group %v)", printAST(o.e))
-// 	case *LiteralExpr:
-// 		return fmt.Sprintf("%v", o.value)
-// 	default:
-// 		panic("unexpected type of expr")
-// 	}
-// }
+func printExprAST(e Expr) string {
+	switch o := e.(type) {
+	case *BinaryExpr:
+		return fmt.Sprintf("(%v %v %v)",
+			o.operator.tok, printExprAST(o.left), printExprAST(o.right))
+	//case *TernaryExpr:
+	//	return fmt.Sprintf("(%v %v %v %v)",
+	//		o.operator.tok, printExprAST(o.op1), printExprAST(o.op2), printExprAST(o.op3))
+	case *UnaryExpr:
+		return fmt.Sprintf("(%v %v)",
+			o.operator.tok, printExprAST(o.right))
+	case *GroupingExpr:
+		return fmt.Sprintf("(group %v)", printExprAST(o.e))
+	case *LiteralExpr:
+		return fmt.Sprintf("%v", o.value)
+	default:
+		panic("unexpected type of expr")
+	}
+}

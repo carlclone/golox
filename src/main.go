@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 )
 
@@ -14,7 +15,7 @@ func main() {
 		fmt.Fprint(os.Stderr, "usage:golox [script]\n")
 		os.Exit(1)
 	} else if len(args) == 2 {
-
+		runFile(args[1])
 	} else {
 		runPrompt()
 	}
@@ -33,6 +34,17 @@ func runPrompt() {
 	}
 }
 
+func runFile(file string) {
+	data, err := os.ReadFile(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	run(string(data))
+	if hadError {
+		os.Exit(1)
+	}
+}
+
 func run(source string) {
 	scanner := NewScanner(source)
 	tokens, err := scanner.scan()
@@ -42,9 +54,9 @@ func run(source string) {
 		hadError = true
 		return
 	}
-	// for _, t := range tokens {
-	// 	fmt.Println("token ", t)
-	// }
+	//for _, t := range tokens {
+	//	fmt.Println("token ", t)
+	//}
 
 	p := NewParser(tokens)
 	stmt, errs := p.parse()
@@ -55,7 +67,15 @@ func run(source string) {
 		hadError = true
 		return
 	}
-	for _, s := range stmt {
-		fmt.Println(s)
+	//for _, s := range stmt {
+	//	fmt.Println(s)
+	//	//printExprAST(s)
+	//}
+
+	globals := NewEnv(nil) // root env has no enclosure
+	if err := interpret(stmt, globals); err != nil {
+		fmt.Println(err)
+		hadError = true
 	}
+
 }

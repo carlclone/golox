@@ -3,7 +3,7 @@ package main
 type (
 	Stmt interface {
 		aStmt()
-		//execute(*Env)
+		execute(*Env)
 	}
 
 	stmt struct{}

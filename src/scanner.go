@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 // ScanError define new error type for scan error
 type ScanError string
@@ -50,6 +53,8 @@ func (s *Scanner) scanToken() {
 		s.token(RightParen)
 	case '{':
 		s.token(LeftBrace)
+	case '}':
+		s.token(RightBrace)
 	case ',':
 		s.token(Comma)
 	case ':':
@@ -139,8 +144,21 @@ func (s *Scanner) number() {
 	for isDigit(s.peek()) && !s.atEnd() {
 		s.advance()
 	}
+	//float support
+	if s.peek() == '.' && isDigit(s.peekNext()) {
+		s.advance()
+		for isDigit(s.peek()) {
+			s.advance()
+		}
+	}
 	lit := s.source[s.start:s.current]
-	s.literal(Number, lit)
+
+	val, err := strconv.ParseFloat(lit, 64)
+	if err != nil {
+		//scan phase stop immediately
+		s.report("cannot parse float number")
+	}
+	s.literal(Number, val)
 }
 
 //match "* */" , important cases , atEnd , \n , not terminated
