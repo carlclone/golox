@@ -42,5 +42,20 @@ func run(source string) {
 		hadError = true
 		return
 	}
-	fmt.Println(tokens)
+	// for _, t := range tokens {
+	// 	fmt.Println("token ", t)
+	// }
+
+	p := NewParser(tokens)
+	stmt, errs := p.parse()
+	if len(errs) > 0 {
+		for _, e := range errs {
+			fmt.Println(e)
+		}
+		hadError = true
+		return
+	}
+	for _, s := range stmt {
+		fmt.Println(s)
+	}
 }
