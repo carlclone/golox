@@ -109,7 +109,7 @@ func (s *FunExpr) eval(env *Env) value {
 
 // TODO; () ?
 func (e *GroupingExpr) eval(env *Env) value {
-	return e.e.eval(env)
+	return e.expression.eval(env)
 }
 
 // like string or number , produce itself
@@ -150,12 +150,36 @@ func (e *UnaryExpr) eval(env *Env) value {
 
 // produce variable name
 func (e *VarExpr) eval(env *Env) value {
-	return env.get(e.name)
+	return env.lookUpVariable(e.name, e)
+	//return env.get(e.name)
 }
 
 func (e *AssignExpr) eval(env *Env) value {
+	/*
+
+		public Object visitAssignExpr(Expr.Assign expr) {
+		    Object value = evaluate(expr.value);
+		lox/Interpreter.java
+		in visitAssignExpr()
+		replace 1 line
+
+		    Integer distance = locals.get(expr);
+		    if (distance != null) {
+		      environment.assignAt(distance, expr.name, value);
+		    } else {
+		      globals.assign(expr.name, value);
+		    }
+
+		    return value;
+	*/
 	v := e.value.eval(env)
-	env.assign(e.name, v)
+	distance, ok := locals.get(e)
+	if ok {
+		env.assignAt(distance, e.name, v)
+	} else {
+		env.globals.assign(e.name, v)
+	}
+	//env.assign(e.name, v)
 	return v
 }
 

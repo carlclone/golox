@@ -4,6 +4,7 @@ type (
 	Stmt interface {
 		aStmt()
 		execute(*Env)
+		accept(resolver *Resolver)
 	}
 
 	stmt struct{}
@@ -66,6 +67,7 @@ type (
 	}
 )
 
-func (*stmt) aStmt() {}
+func (*stmt) aStmt()                    {}
+func (*stmt) accept(resolver *Resolver) {}
 
 //func (*stmt) execute(*Env) {}

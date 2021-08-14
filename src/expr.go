@@ -6,6 +6,7 @@ type (
 	Expr interface { // interface declaration for type check
 		aExpr()
 		eval(*Env) value
+		accept(resolver *Resolver)
 	}
 
 	expr struct{} // think as a parent class
@@ -36,7 +37,7 @@ type (
 	}
 
 	GroupingExpr struct {
-		e Expr //mostly expression surround by ()
+		expression Expr //mostly expression surround by ()
 		// design for general method , like extend in oop
 		expr
 	}
@@ -64,5 +65,6 @@ type (
 	}
 )
 
-func (*expr) aExpr() {} //add a empty method to distinct with other interface that has eval
-//func (*expr) eval(*Env) value { return nil }
+func (*expr) aExpr()                    {} //add a empty method to distinct with other interface that has eval
+func (*expr) eval(*Env) value           { return nil }
+func (*expr) accept(resolver *Resolver) {}

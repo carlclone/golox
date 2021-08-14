@@ -62,6 +62,33 @@ func (e *Env) define(name string) {
 	e.values[name] = nil
 }
 
+func (e *Env) ancestor(distance int) *Env {
+	var env *Env
+	env = e
+	for i := 0; i < distance; i++ {
+		env = env.enclosing
+	}
+	return env
+}
+
+func (e *Env) getAt(distance int, name string) value {
+	return e.ancestor(distance).values[name]
+}
+
+func (e *Env) assignAt(distance int, name *tokenObj, v value) {
+	e.ancestor(distance).values[name.lexeme] = v //todo;why lexeme instead of literal
+}
+
+func (e *Env) lookUpVariable(name *tokenObj, expr Expr) value {
+	distance, ok := locals[&expr]
+	if ok {
+		return e.getAt(distance, name.lexeme)
+	} else {
+		return e.globals.get(name)
+	}
+}
+
+//todo ; should be deprecate
 func (e *Env) get(name *tokenObj) value {
 	if v, ok := e.values[name.lexeme]; ok {
 		if _, ok := e.init[name.lexeme]; !ok {
@@ -174,7 +201,7 @@ func (f *FunAnon) arity() int {
 }
 
 func (f *FunAnon) call(e *Env, args []value) (v value) {
-	// Should it use env that is passed by e?
+	// Should it use env that is passed by expression?
 	env := NewEnv(f.closure) // only difference between function
 	for i, p := range f.decl.params {
 		env.defineInit(p.lexeme, args[i])

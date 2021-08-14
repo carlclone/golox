@@ -42,7 +42,7 @@ func printExprAST(e Expr) string {
 		return fmt.Sprintf("(%v %v)",
 			o.operator.tok, printExprAST(o.right))
 	case *GroupingExpr:
-		return fmt.Sprintf("(group %v)", printExprAST(o.e))
+		return fmt.Sprintf("(group %v)", printExprAST(o.expression))
 	case *LiteralExpr:
 		return fmt.Sprintf("%v", o.value)
 	default:

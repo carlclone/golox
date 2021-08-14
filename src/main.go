@@ -9,6 +9,18 @@ import (
 
 var hadError = false
 
+type Local map[*Expr]int
+
+func (l *Local) put(e Expr, depth int) {
+	(*l)[&e] = depth
+}
+func (l *Local) get(e Expr) (int, bool) {
+	v, ok := (*l)[&e]
+	return v, ok
+}
+
+var locals = make(Local)
+
 func main() {
 	args := os.Args
 	if len(args) > 2 {
@@ -59,7 +71,7 @@ func run(source string) {
 	//}
 
 	p := NewParser(tokens)
-	stmt, errs := p.parse()
+	stmts, errs := p.parse()
 	if len(errs) > 0 {
 		for _, e := range errs {
 			fmt.Println(e)
@@ -67,13 +79,16 @@ func run(source string) {
 		hadError = true
 		return
 	}
-	//for _, s := range stmt {
+	//for _, s := range stmts {
 	//	fmt.Println(s)
 	//	//printExprAST(s)
 	//}
 
+	resolver := NewResolver()
+	resolver.resolve(stmts)
+
 	globals := NewEnv(nil) // root env has no enclosure
-	if err := interpret(stmt, globals); err != nil {
+	if err := interpret(stmts, globals); err != nil {
 		fmt.Println(err)
 		hadError = true
 	}

@@ -9,6 +9,7 @@ Scanner:https://craftinginterpreters.com/scanning.html
 - [ ] Parser
 - [ ] Interpreter
 - [ ] Static Analysis
+- [ ] Class and inheritance 
 - [ ] Test Suite
 
 # BYTECODE VM

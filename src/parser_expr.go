@@ -166,7 +166,7 @@ func (p *parser) primary() Expr {
 	case p.match(LeftParen):
 		expr := p.expression()
 		p.consume(RightParen, "expected enclosing ')' after expression")
-		return &GroupingExpr{e: expr}
+		return &GroupingExpr{expression: expr}
 	}
 	p.primaryError(p.peek(), "expected expression")
 	return nil
