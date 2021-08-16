@@ -79,7 +79,7 @@ func (e *Env) assignAt(distance int, name *tokenObj, v value) {
 	e.ancestor(distance).values[name.lexeme] = v //todo;why lexeme instead of literal
 }
 
-func (e *Env) lookUpVariable(name *tokenObj, id int) (v value) {
+func (e *Env) lookUpVariable(name *tokenObj, id Expr) (v value) {
 	distance, ok := locals[id]
 	if ok {
 		v = e.getAt(distance, name.lexeme)

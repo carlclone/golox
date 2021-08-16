@@ -9,12 +9,12 @@ import (
 
 var hadError = false
 
-type Local map[int]int
+type Local map[Expr]int
 
-func (l *Local) put(id int, depth int) {
+func (l *Local) put(id Expr, depth int) {
 	(*l)[id] = depth
 }
-func (l *Local) get(id int) (int, bool) {
+func (l *Local) get(id Expr) (int, bool) {
 	v, ok := (*l)[id]
 	return v, ok
 }

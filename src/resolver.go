@@ -129,7 +129,7 @@ func (r *Resolver) visitWhileStmt(s *WhileStmt) {
 
 func (r *Resolver) visitAssignExpr(e *AssignExpr) {
 	r.resolveExpr(e.value)
-	r.resolveLocal(e.id, e.name)
+	r.resolveLocal(e, e.name)
 	return
 }
 
@@ -187,7 +187,7 @@ func (r *Resolver) visitVariableExpr(e *VarExpr) {
 	if len(r.scopes) != 0 && r.scopePeek()[e.name.lexeme] == false {
 		errorAtToken(e.name, "Can't read local variable in its own initializer.")
 	}
-	r.resolveLocal(e.id, e.name)
+	r.resolveLocal(e, e.name)
 	return
 }
 
@@ -233,7 +233,7 @@ func (r *Resolver) resolveFunction(s *FunStmt, typee FunctionType) {
 }
 
 //TODO
-func (r *Resolver) resolveLocal(id int, name *tokenObj) {
+func (r *Resolver) resolveLocal(id Expr, name *tokenObj) {
 	fmt.Println("resolveLocal called")
 	for i := len(r.scopes) - 1; i >= 0; i-- {
 		scope := r.scopes[i]
