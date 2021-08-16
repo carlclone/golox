@@ -4,10 +4,12 @@ type (
 	Stmt interface {
 		aStmt()
 		execute(*Env)
-		accept(resolver *Resolver)
+		accept(*Resolver)
 	}
 
-	stmt struct{}
+	stmt struct {
+		id int
+	}
 
 	BlockStmt struct {
 		list []Stmt
@@ -69,5 +71,50 @@ type (
 
 func (*stmt) aStmt()                    {}
 func (*stmt) accept(resolver *Resolver) {}
+func (*stmt) execute(*Env)              {}
 
-//func (*stmt) execute(*Env) {}
+func (s *VarStmt) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitVarStmt(s)
+}
+
+func (s *WhileStmt) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitWhileStmt(s)
+}
+func (s *ReturnStmt) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitReturnStmt(s)
+}
+
+func (s *PrintStmt) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitPrintStmt(s)
+}
+func (s *IfStmt) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitIfStmt(s)
+}
+
+func (s *FunStmt) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitFunctionStmt(s)
+}
+func (s *ExprStmt) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitExpressionStmt(s)
+}
+func (s *ContinueStmt) accept(r *Resolver) {
+	s.id = GetId()
+	//todo
+	//r.visitC(s)
+}
+func (s *BreakStmt) accept(r *Resolver) {
+	s.id = GetId()
+	//todo
+	//r.visibre(s)
+}
+func (s *BlockStmt) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitBlockStmt(s)
+}

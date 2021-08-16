@@ -79,13 +79,14 @@ func (e *Env) assignAt(distance int, name *tokenObj, v value) {
 	e.ancestor(distance).values[name.lexeme] = v //todo;why lexeme instead of literal
 }
 
-func (e *Env) lookUpVariable(name *tokenObj, expr Expr) value {
-	distance, ok := locals[&expr]
+func (e *Env) lookUpVariable(name *tokenObj, id int) (v value) {
+	distance, ok := locals[id]
 	if ok {
-		return e.getAt(distance, name.lexeme)
+		v = e.getAt(distance, name.lexeme)
 	} else {
-		return e.globals.get(name)
+		v = e.globals.get(name)
 	}
+	return v
 }
 
 //todo ; should be deprecate

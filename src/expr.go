@@ -4,12 +4,14 @@ type (
 	value interface{} // alias for readability
 
 	Expr interface { // interface declaration for type check
-		aExpr()
+		//aExpr()
 		eval(*Env) value
 		accept(resolver *Resolver)
 	}
 
-	expr struct{} // think as a parent class
+	expr struct {
+		id int
+	} // think as a parent class
 
 	AssignExpr struct {
 		name  *tokenObj
@@ -65,6 +67,53 @@ type (
 	}
 )
 
-func (*expr) aExpr()                    {} //add a empty method to distinct with other interface that has eval
+//func (*expr) aExpr()                    {} //add a empty method to distinct with other interface that has eval
 func (*expr) eval(*Env) value           { return nil }
 func (*expr) accept(resolver *Resolver) {}
+
+func (s *VarExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	r.visitVariableExpr(s)
+}
+
+func (s *UnaryExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	r.visitUnaryExpr(s)
+}
+func (s *LogicalExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	r.visitLogicalExpr(s)
+}
+func (s *LiteralExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	r.visitLiteralExpr(s)
+}
+func (s *GroupingExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	r.visitGroupingExpr(s)
+}
+func (s *FunExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	//r.visitF(s)
+}
+func (s *CallExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	r.visitCallExpr(s)
+}
+func (s *BinaryExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	r.visitBinaryExpr(s)
+}
+func (s *AssignExpr) accept(r *Resolver) {
+	s.id = GetId()
+
+	r.visitAssignExpr(s)
+}

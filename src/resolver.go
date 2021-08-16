@@ -1,5 +1,9 @@
 package main
 
+import (
+	"fmt"
+)
+
 type FunctionType uint
 type ClassType uint
 
@@ -125,7 +129,7 @@ func (r *Resolver) visitWhileStmt(s *WhileStmt) {
 
 func (r *Resolver) visitAssignExpr(e *AssignExpr) {
 	r.resolveExpr(e.value)
-	r.resolveLocal(e, e.name)
+	r.resolveLocal(e.id, e.name)
 	return
 }
 
@@ -183,7 +187,7 @@ func (r *Resolver) visitVariableExpr(e *VarExpr) {
 	if len(r.scopes) != 0 && r.scopePeek()[e.name.lexeme] == false {
 		errorAtToken(e.name, "Can't read local variable in its own initializer.")
 	}
-	r.resolveLocal(e, e.name)
+	r.resolveLocal(e.id, e.name)
 	return
 }
 
@@ -229,11 +233,12 @@ func (r *Resolver) resolveFunction(s *FunStmt, typee FunctionType) {
 }
 
 //TODO
-func (r *Resolver) resolveLocal(e Expr, name *tokenObj) {
+func (r *Resolver) resolveLocal(id int, name *tokenObj) {
+	fmt.Println("resolveLocal called")
 	for i := len(r.scopes) - 1; i >= 0; i-- {
 		scope := r.scopes[i]
 		if containKey(scope, name.lexeme) {
-			locals.put(e, len(r.scopes)-1-i)
+			locals.put(id, len(r.scopes)-1-i)
 			return
 		}
 	}
@@ -249,6 +254,6 @@ func containKey(m map[string]bool, key string) bool {
 	return ok
 }
 
-func (s *BlockStmt) accept(r *Resolver) {
-	r.visitBlockStmt(s)
+func (s *LiteralExpr) reslove(r *Resolver) {
+	r.visitLiteralExpr(s)
 }

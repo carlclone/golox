@@ -9,17 +9,23 @@ import (
 
 var hadError = false
 
-type Local map[*Expr]int
+type Local map[int]int
 
-func (l *Local) put(e Expr, depth int) {
-	(*l)[&e] = depth
+func (l *Local) put(id int, depth int) {
+	(*l)[id] = depth
 }
-func (l *Local) get(e Expr) (int, bool) {
-	v, ok := (*l)[&e]
+func (l *Local) get(id int) (int, bool) {
+	v, ok := (*l)[id]
 	return v, ok
 }
 
 var locals = make(Local)
+var counter = 0
+
+func GetId() int {
+	counter++
+	return counter
+}
 
 func main() {
 	args := os.Args
@@ -86,6 +92,9 @@ func run(source string) {
 
 	resolver := NewResolver()
 	resolver.resolve(stmts)
+
+	fmt.Println(locals)
+	//return
 
 	globals := NewEnv(nil) // root env has no enclosure
 	if err := interpret(stmts, globals); err != nil {

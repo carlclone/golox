@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // ------------------------------------------
 // Expression Eval
@@ -150,7 +152,7 @@ func (e *UnaryExpr) eval(env *Env) value {
 
 // produce variable name
 func (e *VarExpr) eval(env *Env) value {
-	return env.lookUpVariable(e.name, e)
+	return env.lookUpVariable(e.name, e.id)
 	//return env.get(e.name)
 }
 
@@ -173,7 +175,7 @@ func (e *AssignExpr) eval(env *Env) value {
 		    return value;
 	*/
 	v := e.value.eval(env)
-	distance, ok := locals.get(e)
+	distance, ok := locals.get(e.id)
 	if ok {
 		env.assignAt(distance, e.name, v)
 	} else {
