@@ -5,10 +5,10 @@ Scanner:https://craftinginterpreters.com/scanning.html
 
 # TREE-WALK INTERPRETER
 
-- [ ] Scanner
-- [ ] Parser
-- [ ] Interpreter
-- [ ] Static Analysis
+- [x] Scanner
+- [x] Parser
+- [x] Interpreter
+- [x] Static Analysis
 - [ ] Class and inheritance 
 - [ ] Test Suite
 
