@@ -19,7 +19,7 @@ func runtimeErr(t *tokenObj, msg string) error {
 		fmt.Sprintf("[line %v] runtime error: %v", t.line, msg)))
 }
 
-type ReturnHack value //TODO; what return hack
+type ReturnHack value // use panic to clean the call stack , directly up to top of func call , said "ugly implementation"
 type BreakErr struct{ t *tokenObj }
 type ContinueErr struct{ t *tokenObj }
 
