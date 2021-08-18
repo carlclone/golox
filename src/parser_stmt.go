@@ -24,6 +24,9 @@ func (p *parser) declaration() (s Stmt) {
 	//                 | lambdaCall
 	//                 | varDecl
 	//                 | statement ;
+	if p.match(Class) {
+		return p.classDeclaration()
+	}
 	if p.match(Fun) {
 		if p.check(LeftParen) {
 			return p.lambdaCall()

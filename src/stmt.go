@@ -67,6 +67,13 @@ type (
 		body      Stmt
 		stmt
 	}
+	ClassStmt struct {
+		name       *tokenObj
+		methods    []Stmt
+		superClass *VarExpr //todo
+
+		stmt
+	}
 )
 
 func (*stmt) aStmt()                    {}
@@ -103,6 +110,9 @@ func (s *FunStmt) accept(r *Resolver) {
 func (s *ExprStmt) accept(r *Resolver) {
 	s.id = GetId()
 	r.visitExpressionStmt(s)
+}
+func (s *ClassStmt) accept(r *Resolver) {
+	r.visitClassStmt(s)
 }
 func (s *ContinueStmt) accept(r *Resolver) {
 	s.id = GetId()

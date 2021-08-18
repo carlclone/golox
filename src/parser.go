@@ -6,7 +6,8 @@ import "fmt"
 //
 // program        -> declaration* EOF ;
 //
-// declaration    -> funDecl
+// declaration    -> classDecl
+//				   | funDecl
 //                 | lambdaCall
 //                 | varDecl
 //                 | statement ;
@@ -169,4 +170,20 @@ func (p *parser) parse() (s []Stmt, errs []error) {
 	}
 
 	return s, p.errs
+}
+
+func (p *parser) classDeclaration() Stmt {
+	name := p.consume(Identifier, "Expect class name.")
+	p.consume(LeftBrace, "Expect '{' before class body")
+
+	methods := []Stmt{}
+	for !p.check(RightBrace) && !p.atEnd() {
+		methods = append(methods, p.funDecl("method"))
+	}
+	p.consume(RightBrace, "Expect '}' after class body")
+	return &ClassStmt{
+		name:       name,
+		methods:    methods,
+		superClass: nil,
+	}
 }

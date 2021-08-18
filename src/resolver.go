@@ -51,7 +51,12 @@ func (r *Resolver) visitBlockStmt(s *BlockStmt) {
 	return
 }
 
-//TODO func (r *Resolver) visitClassStmt(s *ClassStmt)
+//TODO
+func (r *Resolver) visitClassStmt(s *ClassStmt) {
+	r.declare(s.name)
+	r.define(s.name)
+	return
+}
 
 func (r *Resolver) visitExpressionStmt(s *ExprStmt) {
 	r.resolveExpr(s.expression)

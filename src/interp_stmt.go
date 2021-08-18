@@ -39,6 +39,37 @@ func execBlock(list []Stmt, env *Env) {
 	}
 }
 
+func (s *ClassStmt) execute(env *Env) {
+	env.define(s.name.lexeme)
+	klass := &LoxClass{name: s.name.lexeme}
+	env.assign(s.name, klass)
+}
+
+type LoxClass struct {
+	name string
+}
+
+func (l *LoxClass) String() string {
+	return l.name
+}
+
+func (l *LoxClass) call(e *Env, arg []value) value {
+	instance := &LoxInstance{l}
+	return instance
+}
+
+func (l *LoxClass) arity() int {
+	return 0
+}
+
+type LoxInstance struct {
+	klass *LoxClass
+}
+
+func (l *LoxInstance) String() string {
+	return l.klass.name + " instance"
+}
+
 func (s *IfStmt) execute(env *Env) {
 	if isTruthy(s.condition.eval(env)) {
 		s.block1.execute(env)
