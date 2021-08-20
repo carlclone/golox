@@ -133,6 +133,28 @@ func (e *LogicalExpr) eval(env *Env) value {
 	return e.right.eval(env) //!false
 }
 
+func (e *GetExpr) eval(env *Env) value {
+	object := e.object.eval(env)
+	if o, ok := object.(LoxInstance); ok {
+		return o.get(e.name)
+	}
+	//todo
+	panic("Only instance have properties")
+}
+
+func (e *SetExpr) eval(env *Env) value {
+	obj := e.object.eval(env)
+
+	if o, ok := obj.(*LoxInstance); ok {
+		vlue := e.vlue.eval(env)
+		o.set(e.name, vlue)
+		return vlue
+	} else {
+		//TODO
+		panic(e.name.lexeme + "Only instances have fields.")
+	}
+}
+
 func (e *UnaryExpr) eval(env *Env) value {
 	val := e.right.eval(env)
 	switch e.operator.tok {

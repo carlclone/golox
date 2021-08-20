@@ -45,8 +45,8 @@ import "fmt"
 // expression     -> funExpr
 //                 | assignment ;
 // funExpr        -> "fun" "(" parameters? ")" block ;
-// assignment     -> IDENTIFIER "=" assignment
-//				   | logicOr ;
+//assignment     → ( call "." )? IDENTIFIER "=" assignment
+//               | logic_or ;
 // logicOr        -> logicAnd ( "or" logicAnd )* ;
 // logicAnd       -> equality ( "and" equality )* ;
 // equality       -> comparison ( ( "!=" | "==" ) comparison )* ;
@@ -54,7 +54,7 @@ import "fmt"
 // term           -> factor ( ( "-" | "+" ) factor )* ;
 // factor         -> unary ( ( "/" | "*" ) unary )* ;
 // unary          -> ( "!" | "-" ) unary | call ;
-// call			  -> primary ( "(" arguments? ")" )* ;
+// call           → primary ( "(" arguments? ")" | "." IDENTIFIER )* ;
 // arguments      -> expression ( "," expression )* ;
 // primary        -> NUMBER | STRING | "true" | "false" | "nil"
 //                 | "(" expression ")"

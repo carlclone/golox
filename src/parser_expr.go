@@ -27,6 +27,12 @@ func (p *parser) assignment() Expr {
 		if ev, ok := expr.(*VarExpr); ok {
 			name := ev.name
 			return &AssignExpr{name: name, value: value}
+		} else if get, ok := expr.(*GetExpr); ok {
+			return &SetExpr{
+				name:   get.name,
+				object: get.object,
+				vlue:   value,
+			}
 		}
 		p.yerror(equals, "invalid assignment target")
 	}
@@ -120,6 +126,12 @@ func (p *parser) call() Expr {
 	for {
 		if p.match(LeftParen) {
 			expr = p.finishCall(expr)
+		} else if p.match(Dot) {
+			name := p.consume(Identifier, "Expect property name after '.'.")
+			expr = &GetExpr{
+				name:   name,
+				object: expr,
+			}
 		} else {
 			break
 		}

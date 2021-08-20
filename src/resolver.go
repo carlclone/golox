@@ -152,8 +152,14 @@ func (r *Resolver) visitCallExpr(e *CallExpr) {
 	return
 }
 
-//TODO
-//func (r *Resolver) visitGetExpr(expression *Get)
+func (r *Resolver) visitGetExpr(e *GetExpr) {
+	r.resolveExpr(e.object)
+}
+func (r *Resolver) visitSetExpr(e *SetExpr) {
+	r.resolveExpr(e.object)
+	r.resolveExpr(e.vlue)
+}
+
 func (r *Resolver) visitGroupingExpr(e *GroupingExpr) {
 	r.resolveExpr(e.expression)
 	return

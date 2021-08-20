@@ -13,6 +13,21 @@ type (
 		id int
 	} // think as a parent class
 
+	GetExpr struct {
+		name   *tokenObj
+		object Expr
+
+		expr
+	}
+
+	SetExpr struct {
+		name   *tokenObj
+		object Expr
+		vlue   Expr
+
+		expr
+	}
+
 	AssignExpr struct {
 		name  *tokenObj
 		value Expr

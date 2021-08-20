@@ -54,7 +54,10 @@ func (l *LoxClass) String() string {
 }
 
 func (l *LoxClass) call(e *Env, arg []value) value {
-	instance := &LoxInstance{l}
+	instance := &LoxInstance{
+		klass:  l,
+		fields: make(map[string]value),
+	}
 	return instance
 }
 
@@ -63,7 +66,20 @@ func (l *LoxClass) arity() int {
 }
 
 type LoxInstance struct {
-	klass *LoxClass
+	klass  *LoxClass
+	fields map[string]value
+}
+
+func (l *LoxInstance) get(name *tokenObj) value {
+	v, ok := l.fields[name.lexeme]
+	if ok {
+		return v
+	}
+	panic("Undefined property '" + name.lexeme + "'.")
+}
+
+func (l *LoxInstance) set(name *tokenObj, v value) {
+	l.fields[name.lexeme] = v
 }
 
 func (l *LoxInstance) String() string {
