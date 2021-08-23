@@ -40,10 +40,10 @@ func (p *parser) assignment() Expr {
 }
 
 func (p *parser) or() Expr {
-	expr := p.and() //也是优先级的体现
+	expr := p.and() //precedence
 	for p.match(Or) {
 		op := p.prev()
-		right := p.and() //优先级的体现 ,  a&&b || c&&d , avoid exec b||c
+		right := p.and() //precedence ,  a&&b || c&&d , avoid exec b||c
 		expr = &LogicalExpr{operator: op, left: expr, right: right}
 	}
 	return expr
@@ -82,8 +82,8 @@ func (p *parser) comparison() Expr { // 1+2 >= 3-4
 }
 
 // term ->  factor ( ( "-" | "+" ) factor )* ;
-//what is term 这里的term是项的意思，是指在加减法里运算符左右的两个项
-func (p *parser) term() Expr { //(1+2) +(3+4)
+//term refers to the two terms to the left and right of the operator in addition and subtraction , like (1+2) +(3+4)
+func (p *parser) term() Expr {
 	expr := p.factor()
 	for p.match(Plus, Minus) {
 		op := p.prev()

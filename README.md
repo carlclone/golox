@@ -14,12 +14,15 @@
 - [x] Parser
 - [x] Interpreter
 - [x] Static Analysis
-- [ ] Class and inheritance 
-- [ ] Dynamic Array 
-- [ ] HashMap 
+- [ ] Class
+- [ ] Dynamic Array
+- [ ] HashMap
 - [ ] Type System
-- [ ] Test Suite
 
+
+Nice to have ...
+- [ ] Inheritance
+- [ ] Test Suite
 # Bytecode VM
 
 To be continue...
@@ -34,3 +37,9 @@ To be continue...
 
 [Go books here...]()
 
+[Geektime WenxueGong Courses]()
+
+
+看到
+
+OK, that’s a lot of semantics to load into your head. Forget about the edge cases for a bit. We’ll get back to those. For n

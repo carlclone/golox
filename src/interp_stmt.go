@@ -41,16 +41,31 @@ func execBlock(list []Stmt, env *Env) {
 
 func (s *ClassStmt) execute(env *Env) {
 	env.define(s.name.lexeme)
+
+	methods := make(map[string]*FunObj)
+	for _, method := range s.methods {
+		function := &FunObj{method.(*FunStmt), env}
+		methods[method.(*FunStmt).name.lexeme] = function
+	}
+
 	klass := &LoxClass{name: s.name.lexeme}
 	env.assign(s.name, klass)
 }
 
 type LoxClass struct {
-	name string
+	name    string
+	methods map[string]*FunObj
 }
 
 func (l *LoxClass) String() string {
 	return l.name
+}
+
+func (l *LoxClass) findMethod(name string) *FunObj {
+	if method, ok := l.methods[name]; ok {
+		return method
+	}
+	return nil
 }
 
 func (l *LoxClass) call(e *Env, arg []value) value {
@@ -74,6 +89,11 @@ func (l *LoxInstance) get(name *tokenObj) value {
 	v, ok := l.fields[name.lexeme]
 	if ok {
 		return v
+	}
+
+	method := l.klass.findMethod(name.lexeme)
+	if method != nil {
+		return method
 	}
 	panic("Undefined property '" + name.lexeme + "'.")
 }

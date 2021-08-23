@@ -160,6 +160,7 @@ func (c clockFn) call(_ *Env, _ []value) value { // does not care about args , b
 
 // ------------------------------------------
 // Function
+// FunObj
 
 type FunObj struct {
 	decl    *FunStmt

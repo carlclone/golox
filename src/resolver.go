@@ -54,6 +54,10 @@ func (r *Resolver) visitBlockStmt(s *BlockStmt) {
 //TODO
 func (r *Resolver) visitClassStmt(s *ClassStmt) {
 	r.declare(s.name)
+
+	for _, method := range s.methods {
+		r.resolveFunction(method.(*FunStmt), FT_METHOD)
+	}
 	r.define(s.name)
 	return
 }

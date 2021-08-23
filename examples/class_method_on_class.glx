@@ -52,4 +52,13 @@ bill.name = "Bill";
 
 bill.sayName = jane.sayName;
 bill.sayName(); // ?
+
+
+class Bacon {
+  eat() {
+    print "Crunch crunch crunch!";
+  }
+}
+
+Bacon().eat(); // Prints "Crunch crunch crunch!".
 */
