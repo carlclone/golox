@@ -155,6 +155,10 @@ func (e *SetExpr) eval(env *Env) value {
 	}
 }
 
+func (e *ThisExpr) eval(env *Env) value {
+	return env.lookUpVariable(e.keyword, e)
+}
+
 func (e *UnaryExpr) eval(env *Env) value {
 	val := e.right.eval(env)
 	switch e.operator.tok {

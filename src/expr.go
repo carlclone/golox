@@ -80,6 +80,11 @@ type (
 		name *tokenObj
 		expr
 	}
+
+	ThisExpr struct {
+		keyword *tokenObj
+		expr
+	}
 )
 
 //func (*expr) aExpr()                    {} //add a empty method to distinct with other interface that has eval

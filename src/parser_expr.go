@@ -173,6 +173,8 @@ func (p *parser) primary() Expr {
 		return &LiteralExpr{value: nil}
 	case p.match(Number, String):
 		return &LiteralExpr{value: p.prev().literal}
+	case p.match(This):
+		return &ThisExpr{keyword: p.prev()}
 	case p.match(Identifier):
 		return &VarExpr{name: p.prev()}
 	case p.match(LeftParen):

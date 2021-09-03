@@ -163,14 +163,28 @@ func (c clockFn) call(_ *Env, _ []value) value { // does not care about args , b
 // FunObj
 
 type FunObj struct {
-	decl    *FunStmt
-	closure *Env
+	decl          *FunStmt
+	closure       *Env
+	isInitializer bool
+}
+
+func (f *FunObj) bind(l *LoxInstance) *FunObj {
+	env := Env{
+		enclosing: f.closure,
+	}
+	env.defineInit("this", l)
+	return &FunObj{
+		decl:          f.decl,
+		closure:       &env,
+		isInitializer: f.isInitializer,
+	}
 }
 
 func (f *FunObj) arity() int {
 	return len(f.decl.params)
 }
 
+//LoxFunction
 func (f *FunObj) call(e *Env, args []value) (v value) {
 	env := NewEnv(f.closure)          //create an env for function call
 	for i, p := range f.decl.params { //args adds into env
@@ -179,6 +193,11 @@ func (f *FunObj) call(e *Env, args []value) (v value) {
 
 	defer func() {
 		if e := recover(); e != nil {
+
+			if f.isInitializer {
+				v = f.closure.getAt(0, "this")
+			}
+
 			// return whatever value is being panicked at us from return stmt
 			v = e.(ReturnHack) //TODO
 		}

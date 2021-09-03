@@ -53,12 +53,27 @@ func (r *Resolver) visitBlockStmt(s *BlockStmt) {
 
 //TODO
 func (r *Resolver) visitClassStmt(s *ClassStmt) {
+	enclosingClass := r.currentClass
+	r.currentClass = CT_CLASS
 	r.declare(s.name)
 
+	r.beginScope()
+
+	// scopes.peek().put("this", true);
+	scope := r.scopes[len(r.scopes)-1]
+	scope["this"] = true
+
 	for _, method := range s.methods {
-		r.resolveFunction(method.(*FunStmt), FT_METHOD)
+		decl := FT_METHOD
+		if method.(*FunStmt).name.lexeme == "init" {
+			decl = FT_INITIALIZER
+		}
+		r.resolveFunction(method.(*FunStmt), FunctionType(decl))
 	}
 	r.define(s.name)
+
+	r.endScope()
+	r.currentClass = enclosingClass
 	return
 }
 
@@ -179,6 +194,15 @@ func (r *Resolver) visitLogicalExpr(e *LogicalExpr) {
 	return
 }
 
+func (r *Resolver) visitThisExpr(e *ThisExpr) {
+	if r.currentClass == CT_NONE {
+		errorAtToken(e.keyword, "Can't use 'this' outside of a class.")
+		return
+	}
+	r.resolveLocal(e, e.keyword)
+	return
+}
+
 //todo
 //func (r *Resolver) visitSetExpr(e *LiteralExpr) {
 //	r.resolveExpr(e.value)
@@ -191,9 +215,6 @@ func (r *Resolver) visitSuperExpr(e *LiteralExpr) {
 	return
 }
 
-func (r *Resolver) visitThisExpr(e *LiteralExpr) {
-	return
-}
 func (r *Resolver) visitUnaryExpr(e *UnaryExpr) {
 	r.resolveExpr(e.right)
 	return

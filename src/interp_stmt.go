@@ -10,7 +10,7 @@ func (s *ExprStmt) execute(env *Env) {
 }
 
 func (s *FunStmt) execute(env *Env) {
-	fn := &FunObj{decl: s, closure: NewEnv(env)}
+	fn := &FunObj{decl: s, closure: NewEnv(env), isInitializer: false}
 	env.defineInit(s.name.lexeme, fn) // add fun decl as env variable
 }
 
@@ -44,7 +44,7 @@ func (s *ClassStmt) execute(env *Env) {
 
 	methods := make(map[string]*FunObj)
 	for _, method := range s.methods {
-		function := &FunObj{method.(*FunStmt), env}
+		function := &FunObj{method.(*FunStmt), env, method.(*FunStmt).name.lexeme == "init"}
 		methods[method.(*FunStmt).name.lexeme] = function
 	}
 
@@ -73,11 +73,24 @@ func (l *LoxClass) call(e *Env, arg []value) value {
 		klass:  l,
 		fields: make(map[string]value),
 	}
+	initializer := l.findMethod("init")
+	if initializer != nil {
+		initializer.bind(instance).call(e, arg)
+	}
 	return instance
 }
 
 func (l *LoxClass) arity() int {
-	return 0
+	/*
+		LoxFunction initializer = findMethod("init");
+		    if (initializer == null) return 0;
+		    return initializer.arity();
+	*/
+	initializer := l.findMethod("init")
+	if initializer == nil {
+		return 0
+	}
+	return initializer.arity()
 }
 
 type LoxInstance struct {
@@ -93,7 +106,7 @@ func (l *LoxInstance) get(name *tokenObj) value {
 
 	method := l.klass.findMethod(name.lexeme)
 	if method != nil {
-		return method
+		return method.bind(l)
 	}
 	panic("Undefined property '" + name.lexeme + "'.")
 }
