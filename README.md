@@ -15,14 +15,14 @@
 - [x] Interpreter
 - [x] Static Analysis
 - [x] Class
+- [ ] Test Suite
 - [ ] Dynamic Array
 - [ ] HashMap
-- [ ] Type System
-
 
 Nice to have ...
 - [ ] Inheritance
-- [ ] Test Suite
+- [ ] Type System
+
 # Bytecode VM
 
 To be continue...
