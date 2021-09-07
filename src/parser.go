@@ -176,9 +176,9 @@ func (p *parser) classDeclaration() Stmt {
 	name := p.consume(Identifier, "Expect class name.")
 	p.consume(LeftBrace, "Expect '{' before class body")
 
-	methods := []Stmt{}
+	methods := []*FunStmt{}
 	for !p.check(RightBrace) && !p.atEnd() {
-		methods = append(methods, p.funDecl("method"))
+		methods = append(methods, p.funDecl("method").(*FunStmt))
 	}
 	p.consume(RightBrace, "Expect '}' after class body")
 	return &ClassStmt{

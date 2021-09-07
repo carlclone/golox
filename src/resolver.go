@@ -65,10 +65,10 @@ func (r *Resolver) visitClassStmt(s *ClassStmt) {
 
 	for _, method := range s.methods {
 		decl := FT_METHOD
-		if method.(*FunStmt).name.lexeme == "init" {
+		if method.name.lexeme == "init" {
 			decl = FT_INITIALIZER
 		}
-		r.resolveFunction(method.(*FunStmt), FunctionType(decl))
+		r.resolveFunction(method, FunctionType(decl))
 	}
 	r.define(s.name)
 
@@ -120,12 +120,10 @@ func (r *Resolver) visitPrintStmt(s *PrintStmt) {
 }
 
 func (r *Resolver) visitReturnStmt(s *ReturnStmt) {
-	//TODO
 	if r.currentFunction == FT_NONE {
 		errorAtToken(s.keyword, "Can't return from top-level code.")
 	}
 
-	//TODO
 	if s.value != nil {
 		if r.currentFunction == FT_INITIALIZER {
 			errorAtToken(s.keyword, "Can't return a value from an initializer.")

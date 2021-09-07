@@ -135,11 +135,11 @@ func (e *LogicalExpr) eval(env *Env) value {
 
 func (e *GetExpr) eval(env *Env) value {
 	object := e.object.eval(env)
-	if o, ok := object.(LoxInstance); ok {
+	if o, ok := object.(*LoxInstance); ok {
 		return o.get(e.name)
 	}
-	//todo
-	panic("Only instance have properties")
+	runtimeErr(e.name, "Only instance have properties")
+	return nil
 }
 
 func (e *SetExpr) eval(env *Env) value {

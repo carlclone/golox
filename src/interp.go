@@ -171,6 +171,8 @@ type FunObj struct {
 func (f *FunObj) bind(l *LoxInstance) *FunObj {
 	env := Env{
 		enclosing: f.closure,
+		values:    map[string]value{},
+		init:      map[string]bool{},
 	}
 	env.defineInit("this", l)
 	return &FunObj{

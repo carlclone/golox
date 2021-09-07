@@ -69,7 +69,7 @@ type (
 	}
 	ClassStmt struct {
 		name       *tokenObj
-		methods    []Stmt
+		methods    []*FunStmt
 		superClass *VarExpr //todo
 
 		stmt

@@ -44,11 +44,11 @@ func (s *ClassStmt) execute(env *Env) {
 
 	methods := make(map[string]*FunObj)
 	for _, method := range s.methods {
-		function := &FunObj{method.(*FunStmt), env, method.(*FunStmt).name.lexeme == "init"}
-		methods[method.(*FunStmt).name.lexeme] = function
+		function := &FunObj{method, env, method.name.lexeme == "init"}
+		methods[method.name.lexeme] = function
 	}
 
-	klass := &LoxClass{name: s.name.lexeme}
+	klass := &LoxClass{name: s.name.lexeme, methods: methods}
 	env.assign(s.name, klass)
 }
 
@@ -108,7 +108,8 @@ func (l *LoxInstance) get(name *tokenObj) value {
 	if method != nil {
 		return method.bind(l)
 	}
-	panic("Undefined property '" + name.lexeme + "'.")
+	runtimeErr(name, "Undefined property '"+name.lexeme+"'.")
+	return nil
 }
 
 func (l *LoxInstance) set(name *tokenObj, v value) {

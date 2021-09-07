@@ -14,7 +14,7 @@
 - [x] Parser
 - [x] Interpreter
 - [x] Static Analysis
-- [ ] Class
+- [x] Class
 - [ ] Dynamic Array
 - [ ] HashMap
 - [ ] Type System
