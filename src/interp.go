@@ -43,6 +43,7 @@ type Env struct {
 }
 
 func NewEnv(enclosing *Env) *Env {
+	fmt.Printf("create an env\n")
 	e := &Env{make(map[string]value), make(map[string]bool), enclosing, nil}
 	if enclosing == nil {
 		// means that this created env is the root, that is global env
@@ -169,16 +170,11 @@ type FunObj struct {
 }
 
 func (f *FunObj) bind(l *LoxInstance) *FunObj {
-	env := Env{
-		enclosing: f.closure,
-		values:    map[string]value{},
-		init:      map[string]bool{},
-		globals:   f.closure.globals,
-	}
+	env := NewEnv(f.closure)
 	env.defineInit("this", l)
 	return &FunObj{
 		decl:          f.decl,
-		closure:       &env,
+		closure:       env,
 		isInitializer: f.isInitializer,
 	}
 }

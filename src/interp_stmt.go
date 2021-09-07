@@ -10,7 +10,7 @@ func (s *ExprStmt) execute(env *Env) {
 }
 
 func (s *FunStmt) execute(env *Env) {
-	fn := &FunObj{decl: s, closure: NewEnv(env), isInitializer: false}
+	fn := &FunObj{decl: s, closure: env, isInitializer: false}
 	env.defineInit(s.name.lexeme, fn) // add fun decl as env variable
 }
 

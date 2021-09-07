@@ -1,3 +1,15 @@
+class Thing {
+  getCallback() {
+    fun localFunction() {
+      print this;
+    }
+
+    return localFunction;
+  }
+}
+
+var callback = Thing().getCallback();
+callback();
 
 
 
@@ -29,16 +41,4 @@ method();
 */
 
 /*
-class Thing {
-  getCallback() {
-    fun localFunction() {
-      print this;
-    }
-
-    return localFunction;
-  }
-}
-
-var callback = Thing().getCallback();
-callback();
 */
