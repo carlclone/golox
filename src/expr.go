@@ -137,3 +137,8 @@ func (s *AssignExpr) accept(r *Resolver) {
 
 	r.visitAssignExpr(s)
 }
+
+func (s *ThisExpr) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitThisExpr(s)
+}

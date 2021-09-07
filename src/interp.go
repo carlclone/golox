@@ -173,6 +173,7 @@ func (f *FunObj) bind(l *LoxInstance) *FunObj {
 		enclosing: f.closure,
 		values:    map[string]value{},
 		init:      map[string]bool{},
+		globals:   f.closure.globals,
 	}
 	env.defineInit("this", l)
 	return &FunObj{
