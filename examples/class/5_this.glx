@@ -1,3 +1,9 @@
+
+
+
+
+/*
+
 class Cake {
   taste() {
     var adjective = "delicious";
@@ -10,7 +16,6 @@ cake.flavor = "German chocolate";
 cake.taste(); // Prints "The German chocolate cake is delicious!".
 
 
-/*
 class Egotist {
   speak() {
     print this;
@@ -19,6 +24,7 @@ class Egotist {
 
 var method = Egotist().speak;
 method();
+
 
 */
 

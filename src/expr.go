@@ -142,3 +142,12 @@ func (s *ThisExpr) accept(r *Resolver) {
 	s.id = GetId()
 	r.visitThisExpr(s)
 }
+func (s *SetExpr) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitSetExpr(s)
+}
+
+func (s *GetExpr) accept(r *Resolver) {
+	s.id = GetId()
+	r.visitGetExpr(s)
+}
