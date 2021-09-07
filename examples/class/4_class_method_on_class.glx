@@ -1,3 +1,12 @@
+class Bacon {
+  eat() {
+    print "Crunch crunch crunch!";
+  }
+}
+
+Bacon().eat(); // Prints "Crunch crunch crunch!".
+
+
 /*
 var m = object.method;
 m(argument);
@@ -54,11 +63,4 @@ bill.sayName = jane.sayName;
 bill.sayName(); // ?
 
 
-class Bacon {
-  eat() {
-    print "Crunch crunch crunch!";
-  }
-}
-
-Bacon().eat(); // Prints "Crunch crunch crunch!".
 */
